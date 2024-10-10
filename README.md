@@ -25,13 +25,6 @@ Este proyecto es una aplicación CRUD (Crear, Leer, Actualizar y Eliminar) desti
    composer install
    cp .env.example .env
    php artisan key:generate
-Configuración
-Asegúrate de configurar el archivo .env con tus credenciales y parámetros específicos antes de iniciar la aplicación.
-
-Funcionalidades
-CRUD de Productos: Permite crear, leer, actualizar y eliminar productos.
-Sesiones de Usuario: Maneja las sesiones para asegurar que las acciones de creación y edición de productos solo se realicen si el usuario está autenticado.
-Filtrado y Paginación: Filtra productos por título, precio y fecha de creación, con paginación de resultados.
 
 ## Configuración
 Asegúrate de configurar el archivo .env con tus credenciales y parámetros específicos antes de iniciar la aplicación.
