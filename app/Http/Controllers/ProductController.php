@@ -6,6 +6,9 @@ use App\Http\Requests\EditProductRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\ListProductRequest;
 use App\Models\Product;
+use App\Services\ProductCreate;
+use App\Services\ProductDelete;
+use App\Services\ProductUpdate;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,8 +16,19 @@ use Illuminate\Support\Facades\Log;
 
 class ProductController extends BaseController
 {
-    public function __construct()
+    protected $productCreate;
+    protected $productUpdate;
+    protected $productDelete;
+
+    public function __construct(
+        ProductCreate $productCreate, 
+        ProductUpdate $productUpdate, 
+        ProductDelete $productDelete 
+    )
     {
+        $this->productCreate = $productCreate;
+        $this->productUpdate = $productUpdate;
+        $this->productDelete = $productDelete;
         $this->middleware(\App\Http\Middleware\SetAuthenticatedSession::class);
     }
 
@@ -62,7 +76,7 @@ class ProductController extends BaseController
     public function store(StoreProductRequest $request): JsonResponse
     {
         try {
-            Product::create($request->validated());
+            $this->productCreate->execute($request->validated());
             Log::info('Producto creado: ' . now());
             return response()->json('Producto creado con éxito', 200);
         } catch (\Exception $e) {
@@ -71,16 +85,16 @@ class ProductController extends BaseController
     }
 
     /**
-     * Edit a product in storage.
+     * Update a product in storage.
      * 
-     * Validates the request data and creates a product if authenticated.
+     * Validates the request data and update a product if authenticated.
      * @param Request $request
      * @return JsonResponse
      */
-    public function edit(EditProductRequest $request): JsonResponse
+    public function update(EditProductRequest $request): JsonResponse
     {
         try {
-            Product::update($request->validated());
+            $this->productUpdate->execute($request->validated());
             Log::info('Producto actualizado: ' . now());
             return response()->json('Producto actualizado con éxito', 200);
         } catch (\Exception $e) {
@@ -100,7 +114,7 @@ class ProductController extends BaseController
             return response()->json(['Debes iniciar sesión para realizar esta acción.'], 403);
         }
         try {
-            Product::delete($productId);
+            $this->productDelete->execute($productId);
             Log::info('Producto eliminado: ' . now());
             return response()->json('Producto eliminado con éxito', 200);
         } catch (\Exception $e) {

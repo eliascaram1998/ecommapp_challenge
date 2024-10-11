@@ -3,44 +3,35 @@
 namespace Tests\Unit;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
 class ProductModelTest extends TestCase
 {
     /** @test */
-    public function it_can_create_a_product()
+    public function test_product_constructor_initializes_attributes()
     {
         $data = [
-            'title' => 'Test Product',
+            'id' => 1,
+            'title' => 'Sample Product',
             'price' => 99.99,
+            'created_at' => date('Y-m-d H:i')
         ];
 
-        $createdProduct = Product::create($data);
+        $product = new Product($data);
 
-        $this->assertEquals('Test Product', $createdProduct['title']);
-        $this->assertEquals(99.99, $createdProduct['price']);
-        Product::delete($createdProduct['id']);
+        $this->assertEquals(1, $product->id);
+        $this->assertEquals('Sample Product', $product->title);
+        $this->assertEquals(99.99, $product->price);
     }
     /** @test */
-    public function it_can_update_a_product()
+    public function test_find_product_by_id()
     {
-        $createdProduct = Product::create([
-            'title' => 'Test Product',
-            'price' => 99.99,
-        ]);
+        File::put(storage_path('app/products.json'), json_encode([['id' => 1, 'title' => 'Test Product', 'price' => 100, 'created_at' => date('Y-m-d H:i')]]));
 
-        $updatedData = [
-            'product_id' => $createdProduct['id'],
-            'title' => 'Updated Product',
-            'price' => 79.99,
-        ];
+        $product = Product::findProductById(1);
 
-        Product::update($updatedData);
-
-        $updatedProduct = Product::findProductById($createdProduct['id']);
-
-        $this->assertEquals('Updated Product', $updatedProduct->title);
-        $this->assertEquals(79.99, $updatedProduct->price);
-        Product::delete($createdProduct['id']);
+        $this->assertNotNull($product);
+        $this->assertEquals('Test Product', $product->title);
     }
 }

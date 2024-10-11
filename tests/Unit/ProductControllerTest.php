@@ -3,12 +3,21 @@
 namespace Tests\Unit;
 
 use App\Models\Product;
+use App\Services\ProductCreate;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 class ProductControllerTest extends TestCase
 {
     use WithoutMiddleware;
+    protected ProductCreate $productCreate;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->productCreate = new ProductCreate();
+    }
+
 
     /**
      * Test the listAjax method.
@@ -25,7 +34,7 @@ class ProductControllerTest extends TestCase
         $this->assertIsArray($response->json());
     }
 
-     /**
+    /**
      * Test the store method.
      *
      * @return void
@@ -37,7 +46,7 @@ class ProductControllerTest extends TestCase
         $data = [
             'title' => 'Test Product',
             'price' => 100,
-            'created_at' => now(),
+            'created_at' => date('Y-m-d H:i'),
         ];
 
         $response = $this->postJson('/products/store', $data);
@@ -55,7 +64,7 @@ class ProductControllerTest extends TestCase
     {
         session(['isAuthenticated' => true]);
 
-        $product = Product::create([
+        $product = $this->productCreate->execute([
             'title' => 'Test Product',
             'price' => 100,
         ]);
@@ -63,6 +72,7 @@ class ProductControllerTest extends TestCase
         $response = $this->deleteJson("/products/delete/{$product['id']}");
 
         $response->assertStatus(200);
-        $this->assertEquals('Producto eliminado con éxito', $response->json());
+
+        $this->assertNull(Product::findProductById($product['id']));
     }
 }

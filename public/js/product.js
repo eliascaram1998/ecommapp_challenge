@@ -85,7 +85,7 @@ class Product {
         $('#editProductForm').on('submit', function (e) {
             e.preventDefault();
             $.ajax({
-                url: '/products/edit',
+                url: '/products/update',
                 method: 'PUT',
                 data: $(this).serialize(),
                 success: function (response) {

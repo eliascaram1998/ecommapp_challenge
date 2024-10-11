@@ -13,8 +13,8 @@ Route::post('/products/listAjax',
 Route::post('/products/store',
 [ProductController::class, 'store'])->name('product.store');
 
-Route::put('/products/edit',
-[ProductController::class, 'edit'])->name('product.edit');
+Route::put('/products/update',
+[ProductController::class, 'update'])->name('product.update');
 
 Route::delete('/products/delete/{id}',
 [ProductController::class, 'delete'])->name('product.delete');
