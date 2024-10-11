@@ -70,7 +70,7 @@ class ProductController extends BaseController
      * Store a newly created product in storage.
      * 
      * Validates the request data and creates a product if authenticated.
-     * @param Request $request
+     * @param StoreProductRequest $request
      * @return JsonResponse
      */
     public function store(StoreProductRequest $request): JsonResponse
@@ -88,7 +88,7 @@ class ProductController extends BaseController
      * Update a product in storage.
      * 
      * Validates the request data and update a product if authenticated.
-     * @param Request $request
+     * @param EditProductRequest $request
      * @return JsonResponse
      */
     public function update(EditProductRequest $request): JsonResponse
@@ -105,7 +105,7 @@ class ProductController extends BaseController
     /**
      * Delete a product in storage.
      * 
-     * @param Request $request
+     * @param int $productId
      * @return JsonResponse
      */
     public function delete(int $productId): JsonResponse
@@ -125,7 +125,7 @@ class ProductController extends BaseController
     /**
      * Extract filters for list from request
      * 
-     * @param Request $request
+     * @param ListProductRequest $request
      * @return array
      */
     protected function getFiltersFromRequest(ListProductRequest $request): array
